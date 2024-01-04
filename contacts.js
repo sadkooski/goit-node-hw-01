@@ -51,12 +51,48 @@ function removeContact(contactId) {
 
 function addContact(name, email, phone) {
   // ...twój kod
+  let contactExists = false;
+
+  fs.readFile(contactsPath)
+    .then((data) => {
+      const contacts = JSON.parse(data);
+      console.log("1", contacts);
+      contacts.forEach((contact) => {
+        if (
+          contact.name === name &&
+          contact.email === email &&
+          contact.phone === phone
+        ) {
+          contactExists = true;
+          return console.log("Kontakt z podanymi danymi już istnieje!");
+        }
+      });
+      if (!contactExists) {
+        const newContact = {
+          id: "123",
+          name: name,
+          email: email,
+          phone: phone,
+        };
+        contacts.push(newContact);
+        const updatedContacts = JSON.stringify(contacts);
+        console.log("2", updatedContacts);
+        return fs.writeFile(contactsPath, updatedContacts);
+      }
+    })
+    .then(() => {
+      console.log("after write");
+    })
+    .catch((error) => {
+      console.error("Wystąpił błąd:", error);
+    });
 }
 
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
+  addContact,
 };
 
 // const fs = require('fs');
