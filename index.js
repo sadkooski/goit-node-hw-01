@@ -1,6 +1,59 @@
-const fs = require("fs").promises;
-const { program } = require("commander");
+const { Command } = require("commander");
 const contacts = require("./contacts");
 
-console.log("test test");
-console.log(contacts.addContact("Oskar", "mrproskar@gmail.com", "123456789"));
+const program = new Command();
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
+
+program.parse(process.argv);
+
+const argv = program.opts();
+
+// TODO: refaktor
+function invokeAction({ action, id, name, email, phone }) {
+  switch (action) {
+    case "list":
+      // ...
+      const allContacts = contacts.listContacts();
+      console.log("Lista kontaktów:");
+      console.log(allContacts);
+      break;
+
+    case "get":
+      // ... id
+      const foundContact = contacts.getContactById(id);
+      if (foundContact) {
+        console.log("Znaleziony kontakt:");
+        console.log(foundContact);
+      } else {
+        console.log("Kontakt o podanym ID nie istnieje.");
+      }
+      break;
+
+    case "add":
+      // ... name email phone
+      const addedContact = contacts.addContact(name, email, phone);
+      console.log("Dodano nowy kontakt:");
+      console.log(addedContact);
+      break;
+
+    case "remove":
+      // ... id
+      const removed = contacts.removeContact(id);
+      if (removed) {
+        console.log("Kontakt został usunięty.");
+      } else {
+        console.log("Nie można znaleźć kontaktu o podanym ID.");
+      }
+      break;
+
+    default:
+      console.warn("\x1B[31m Unknown action type!");
+  }
+}
+
+invokeAction(argv);
