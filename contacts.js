@@ -7,7 +7,10 @@ const contactsPath = path.join(__dirname, "db", "contacts.json");
 function listContacts() {
   // ...twój kod
   fs.readFile(contactsPath)
-    .then((data) => console.log(data.toString()))
+    .then((data) => {
+      console.log("Contacts to string:", data.toString());
+      return data.toString();
+    })
     .catch((err) => console.log(err.message));
 }
 
@@ -25,7 +28,8 @@ function getContactById(contactId) {
 function removeContact(contactId) {
   // ...twój kod
   let updatedContacts;
-  fs.readFile(contactsPath)
+  return fs
+    .readFile(contactsPath)
     .then((data) => {
       const contacts = JSON.parse(data);
       const indexToRemove = contacts.findIndex(
@@ -53,10 +57,10 @@ function addContact(name, email, phone) {
   // ...twój kod
   let contactExists = false;
 
-  fs.readFile(contactsPath)
+  return fs
+    .readFile(contactsPath)
     .then((data) => {
       const contacts = JSON.parse(data);
-      console.log("1", contacts);
       contacts.forEach((contact) => {
         if (
           contact.name === name &&
@@ -76,12 +80,9 @@ function addContact(name, email, phone) {
         };
         contacts.push(newContact);
         const updatedContacts = JSON.stringify(contacts);
-        console.log("2", updatedContacts);
+        console.log("after add", updatedContacts);
         return fs.writeFile(contactsPath, updatedContacts);
       }
-    })
-    .then(() => {
-      console.log("after write");
     })
     .catch((error) => {
       console.error("Wystąpił błąd:", error);
