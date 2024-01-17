@@ -1,6 +1,10 @@
-const { Command } = require("commander");
-const contacts = require("./contacts");
-
+import { Command } from "commander";
+import {
+  listContacts,
+  getContactById,
+  removeContact,
+  addContact,
+} from "./contacts.js";
 const program = new Command();
 program
   .option("-a, --action <type>", "choose action")
@@ -18,14 +22,14 @@ function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
       // ...
-      const allContacts = contacts.listContacts();
+      const allContacts = listContacts();
       console.log("Lista kontaktów:");
       console.log(allContacts);
       break;
 
     case "get":
       // ... id
-      const foundContact = contacts.getContactById(id);
+      const foundContact = getContactById(id);
       if (foundContact) {
         console.log("Znaleziony kontakt:");
         console.log(foundContact);
@@ -36,14 +40,14 @@ function invokeAction({ action, id, name, email, phone }) {
 
     case "add":
       // ... name email phone
-      const addedContact = contacts.addContact(name, email, phone);
+      const addedContact = addContact(name, email, phone);
       console.log("Dodano nowy kontakt:");
       console.log(addedContact);
       break;
 
     case "remove":
       // ... id
-      const removed = contacts.removeContact(id);
+      const removed = removeContact(id);
       if (removed) {
         console.log("Kontakt został usunięty.");
       } else {
